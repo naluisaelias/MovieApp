@@ -4,6 +4,8 @@ import 'package:movie_app/common/utils.dart';
 import 'package:movie_app/models/movie_detail_model.dart';
 import 'package:movie_app/models/movie_model.dart';
 import 'package:movie_app/services/api_services.dart';
+import 'package:movie_app/models/movie_video_model.dart'; // Add: Movie Video Model
+import 'package:youtube_player_flutter/youtube_player_flutter.dart'; // Add: Youtube Dependencie
 
 class MovieDetailPage extends StatefulWidget {
   final int movieId;
@@ -18,6 +20,9 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
 
   late Future<MovieDetailModel> movieDetail;
   late Future<Result> movieRecommendationModel;
+  late Future<List<MovieVideo>> movieVideos; // Add: Future para vídeos do filme
+  late YoutubePlayerController
+      _youtubePlayerController; // Add: Controller do Youtube
 
   @override
   void initState() {
@@ -29,7 +34,27 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
     movieDetail = apiServices.getMovieDetail(widget.movieId);
     movieRecommendationModel =
         apiServices.getMovieRecommendations(widget.movieId);
-    setState(() {});
+    movieVideos = apiServices
+        .getMovieVideo(widget.movieId)
+        .then((result) => result.results); // Add: Get -> Movie vídeos
+  }
+
+// Add: Dispose -> Para garantir que a memória utilizada pelo player seja liberada
+  @override
+  void dispose() {
+    _youtubePlayerController.dispose();
+    super.dispose();
+  }
+
+// Add: Youtube Initializer
+  void initializeYoutubePlayer(String videoId) {
+    _youtubePlayerController = YoutubePlayerController(
+      initialVideoId: videoId,
+      flags: const YoutubePlayerFlags(
+        autoPlay: false,
+        mute: false,
+      ),
+    );
   }
 
   @override
@@ -101,6 +126,7 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
                             const SizedBox(
                               width: 30,
                             ),
+                            const SizedBox(width: 30),
                             Text(
                               genresText,
                               style: const TextStyle(
@@ -125,6 +151,45 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
                   ),
                   const SizedBox(
                     height: 30,
+                    ),
+                  // Adicionando o vídeo do filme
+                  FutureBuilder<List<MovieVideo>>(
+                    future: movieVideos,
+                    builder: (context, videoSnapshot) {
+                      if (videoSnapshot.connectionState ==
+                          ConnectionState.waiting) {
+                        return const Center(child: CircularProgressIndicator());
+                      } else if (videoSnapshot.hasError) {
+                        return const Text('Erro ao carregar vídeos.');
+                      } else if (videoSnapshot.hasData) {
+                        final videos = videoSnapshot.data!;
+                        final trailer = videos.firstWhere(
+                          (video) =>
+                              video.type == 'Trailer' &&
+                              video.site == 'YouTube',
+                          orElse: () => null as MovieVideo,
+                        );
+
+                        if (trailer != null) {
+                          initializeYoutubePlayer(
+                              trailer.key); 
+
+                          return Padding(
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: 16.0),
+                            child: YoutubePlayer(
+                              controller: _youtubePlayerController,
+                              showVideoProgressIndicator: true,
+                              progressIndicatorColor: Colors.amber,
+                            ),
+                          );
+                        } else {
+                          return const Text('Nenhum trailer disponível.');
+                        }
+                      } else {
+                        return const Text('Nenhum vídeo encontrado.');
+                      }
+                    },
                   ),
                   FutureBuilder(
                     future: movieRecommendationModel,
@@ -139,8 +204,6 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
                                 children: [
                                   const Text(
                                     "More like this",
-                                    maxLines: 6,
-                                    overflow: TextOverflow.ellipsis,
                                     style: TextStyle(
                                       color: Colors.white,
                                       fontWeight: FontWeight.bold,
@@ -153,7 +216,7 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
                                     shrinkWrap: true,
                                     padding: EdgeInsets.zero,
                                     scrollDirection: Axis.vertical,
-                                    itemCount: movie!.movies.take(3).toList().length, // Update: Limitação para o número de filmes recomendados
+                                    itemCount: movie.movies.take(3).length, // Update: Limitação para o número de filmes recomendados
                                     gridDelegate:
                                         const SliverGridDelegateWithFixedCrossAxisCount(
                                       crossAxisCount: 3,

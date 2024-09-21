@@ -4,6 +4,7 @@ import 'package:http/http.dart' as http;
 import 'package:movie_app/common/utils.dart';
 import 'package:movie_app/models/movie_detail_model.dart';
 import 'package:movie_app/models/movie_model.dart';
+import 'package:movie_app/models/movie_video_model.dart'; // Add: Movie Video Model
 
 const baseUrl = 'https://api.themoviedb.org/3/';
 const key = '?api_key=$apiKey';
@@ -88,5 +89,17 @@ class ApiServices {
       return Result.fromJson(jsonDecode(response.body));
     }
     throw Exception('Falha ao carregar filmes populares'); // Update: Mensagem no idioma da API
+  }
+
+  // Add: Novo endPoint -> Movie Videos
+  Future<MovieVideoResult> getMovieVideo(int movieId) async {
+    final endPoint = 'movie/$movieId/videos';
+    final url = '$baseUrl$endPoint$key'; 
+
+    final response = await http.get(Uri.parse(url));
+    if (response.statusCode == 200) {
+      return MovieVideoResult.fromJson(jsonDecode(response.body));
+    }
+    throw Exception('Falha ao carregar vídeo do filme'); 
   }
 }
