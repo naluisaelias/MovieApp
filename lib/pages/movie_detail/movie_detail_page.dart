@@ -153,7 +153,7 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
                                     shrinkWrap: true,
                                     padding: EdgeInsets.zero,
                                     scrollDirection: Axis.vertical,
-                                    itemCount: movie.movies.length,
+                                    itemCount: movie!.movies.take(3).toList().length, // Update: Limitação para o número de filmes recomendados
                                     gridDelegate:
                                         const SliverGridDelegateWithFixedCrossAxisCount(
                                       crossAxisCount: 3,
