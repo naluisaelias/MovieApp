@@ -1,16 +1,18 @@
-# movie_app
+# Movie App
 
-A new Flutter project.
+Um aplicativo Flutter para exibir informações sobre filmes, incluindo detalhes, vídeos, recomendações e muito mais.
 
-## Getting Started
+## Funcionalidades
 
-This project is a starting point for a Flutter application.
+- Exibir lista de filmes populares
+- Detalhes do filme, incluindo sinopse, gênero e data de lançamento
+- Reproduzir trailers de filmes
+- Recomendações de filmes semelhantes
 
-A few resources to get you started if this is your first Flutter project:
+## Tecnologias Utilizadas
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+- **Flutter**
+- **Dart**
+- **The Movie Database (TMDb) API**
+- **Cached Network Image**
+- **YouTube Player** (opcional para reprodução de vídeos)
