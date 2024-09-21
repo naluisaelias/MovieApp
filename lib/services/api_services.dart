@@ -5,6 +5,7 @@ import 'package:movie_app/common/utils.dart';
 import 'package:movie_app/models/movie_detail_model.dart';
 import 'package:movie_app/models/movie_model.dart';
 import 'package:movie_app/models/movie_video_model.dart'; // Add: Movie Video Model
+import 'package:movie_app/models/watch_provider_model.dart'; // Add: Watch Provider Model
 
 const baseUrl = 'https://api.themoviedb.org/3/';
 const key = '?api_key=$apiKey';
@@ -102,4 +103,17 @@ class ApiServices {
     }
     throw Exception('Falha ao carregar vídeo do filme'); 
   }
+
+    // Add: Novo endPoint -> Watch Providers
+  Future<WatchProviderResult> getWatchProviders(int movieId) async {
+  final endPoint = 'movie/$movieId/watch/providers';
+  final url = '$baseUrl$endPoint$key';
+
+  final response = await http.get(Uri.parse(url));
+  if (response.statusCode == 200) {
+    return WatchProviderResult.fromJson(jsonDecode(response.body));
+  }
+  throw Exception('Falha ao carregar provedores de streaming.');
+}
+
 }

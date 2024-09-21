@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:movie_app/common/utils.dart';
 import 'package:movie_app/models/movie_detail_model.dart';
 import 'package:movie_app/models/movie_model.dart';
+import 'package:movie_app/models/watch_provider_model.dart';
 import 'package:movie_app/services/api_services.dart';
 import 'package:movie_app/models/movie_video_model.dart'; // Add: Movie Video Model
 import 'package:youtube_player_flutter/youtube_player_flutter.dart'; // Add: Youtube Dependencie
@@ -23,6 +24,8 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
   late Future<List<MovieVideo>> movieVideos; // Add: Future para vídeos do filme
   late YoutubePlayerController
       _youtubePlayerController; // Add: Controller do Youtube
+  late Future<WatchProviderResult>
+      watchProviders; // Add: Future para watch providers
 
   @override
   void initState() {
@@ -37,6 +40,8 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
     movieVideos = apiServices
         .getMovieVideo(widget.movieId)
         .then((result) => result.results); // Add: Get -> Movie vídeos
+    watchProviders = apiServices
+        .getWatchProviders(widget.movieId); // Add: Get ->  Watch Providers
   }
 
 // Add: Dispose -> Para garantir que a memória utilizada pelo player seja liberada
@@ -151,7 +156,35 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
                   ),
                   const SizedBox(
                     height: 30,
-                    ),
+                  ),
+// Adicionando os streamings onde o filme está disponível
+                  FutureBuilder<WatchProviderResult>(
+                    future: watchProviders,
+                    builder: (context, providerSnapshot) {
+                      if (providerSnapshot.connectionState ==
+                          ConnectionState.waiting) {
+                        return const Center(child: CircularProgressIndicator());
+                      } else if (providerSnapshot.hasError) {
+                        return const Text('Erro ao carregar provedores.');
+                      } else if (providerSnapshot.hasData) {
+                        final providers = providerSnapshot.data!.results;
+
+                        final brProviders = providers['BR'] ?? [];
+                        if (brProviders.isEmpty) {
+                          return const Text(
+                              'Não disponível em serviços de streaming no Brasil.');
+                        }
+                        return Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: brProviders.map<Widget>((provider) {
+                            return Text('Provedor: ${provider.providerName}');
+                          }).toList(),
+                        );
+                      }
+                      return const Text('Nenhum provedor encontrado.');
+                    },
+                  ),
+
                   // Adicionando o vídeo do filme
                   FutureBuilder<List<MovieVideo>>(
                     future: movieVideos,
