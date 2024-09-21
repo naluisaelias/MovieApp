@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:movie_app/models/movie_model.dart';
 import 'package:movie_app/widgets/custom_card_thumbnail.dart';
+import 'package:movie_app/pages/movie_detail/movie_detail_page.dart'; // Import de detalhes do filme
 
 class NowPlayingList extends StatefulWidget {
   final Result result;
@@ -29,9 +30,23 @@ class _NowPlayingListState extends State<NowPlayingList> {
             controller: _pageController,
             itemCount: totalItems > maxItems ? maxItems : totalItems,
             itemBuilder: (context, index) {
-              final imgUrl = widget.result.movies[index].posterPath;
-              return CustomCardThumbnail(
-                imageAsset: imgUrl,
+              final movie = widget.result.movies[index];
+              final imgUrl = movie.posterPath;
+              // Add: Navigator.push para página de detalhes do filme
+              return GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => MovieDetailPage(
+                        movieId: movie.id,
+                      ),
+                    ),
+                  );
+                },
+                child: CustomCardThumbnail(
+                  imageAsset: imgUrl,
+                ),
               );
             },
             onPageChanged: (int page) {
