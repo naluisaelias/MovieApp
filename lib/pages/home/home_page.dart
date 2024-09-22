@@ -40,7 +40,7 @@ class _HomePageState extends State<HomePage> {
               const Padding(
                 padding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
                 child: Text(
-                  'Now Playing',
+                  'Em cartaz', // Update -> Tradução
                   style: TextStyle(
                     color: Colors.white54,
                     fontWeight: FontWeight.w300,
@@ -63,7 +63,7 @@ class _HomePageState extends State<HomePage> {
               const Padding(
                 padding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
                 child: Text(
-                  'Popular',
+                  'Mais Populares', // Update -> Tradução
                   style: TextStyle(
                     color: Colors.white54,
                     fontWeight: FontWeight.w300,
@@ -83,7 +83,7 @@ class _HomePageState extends State<HomePage> {
               const Padding(
                 padding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
                 child: Text(
-                  'Upcoming',
+                  'Próximos Lançamentos', // Update -> Tradução
                   style: TextStyle(
                     color: Colors.white54,
                     fontWeight: FontWeight.w300,

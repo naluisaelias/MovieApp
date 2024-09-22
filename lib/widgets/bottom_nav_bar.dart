@@ -37,9 +37,9 @@ class _BottomNavBarState extends State<BottomNavBar> {
           iconSize: 30,
           items: const [
             BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
-            BottomNavigationBarItem(icon: Icon(Icons.search), label: 'Search'),
+            BottomNavigationBarItem(icon: Icon(Icons.search), label: 'Buscar'), // Update -> Tradução
             BottomNavigationBarItem(
-                icon: Icon(Icons.trending_up), label: 'Top Rated'), // Update: Correção
+                icon: Icon(Icons.trending_up), label: 'Melhores Filmes'), // Update -> Tradução
           ],
           onTap: (pagina) {
             pc.animateToPage(
