@@ -110,7 +110,7 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
                     ],
                   ),
                   Padding(
-                    padding: EdgeInsets.only(
+                    padding: const EdgeInsets.only(
                         top: 25, left: 10, right: 10), // Update -> Padding
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment
@@ -156,9 +156,9 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
                     ),
                   ),
                   // Updates -> Título da seção
-                  Padding(
+                  const Padding(
                     padding: EdgeInsets.only(top: 25, left: 10, right: 10),
-                    child: const Text(
+                    child: Text(
                       "Disponível em",
                       style: TextStyle(
                         color: Colors.white54,
@@ -169,7 +169,7 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
                     ),
                   ),
                   Padding(
-                    padding: EdgeInsets.only(top: 10, left: 10, right: 10),
+                    padding: const EdgeInsets.only(top: 10, left: 10, right: 10),
                     child: FutureBuilder<WatchProviderResult>(
                       future: watchProviders,
                       builder: (context, providerSnapshot) {
@@ -206,9 +206,9 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
                     ),
                   ),
                   // Updates -> Título da seção
-                  Padding(
+                  const Padding(
                     padding: EdgeInsets.only(top: 25, left: 10, right: 10),
-                    child: const Text(
+                    child: Text(
                       "Assista ao Trailer",
                       style: TextStyle(
                         color: Colors.white54,
@@ -219,7 +219,7 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
                     ),
                   ),
                   Padding(
-                    padding: EdgeInsets.only(top: 10, left: 10, right: 10),
+                    padding: const EdgeInsets.only(top: 10, left: 10, right: 10),
                     child: FutureBuilder<List<MovieVideo>>(
                       future: movieVideos,
                       builder: (context, videoSnapshot) {
@@ -238,24 +238,17 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
                             orElse: () => null as MovieVideo,
                           );
 
-                          if (trailer != null) {
-                            initializeYoutubePlayer(trailer.key);
+                          initializeYoutubePlayer(trailer.key);
 
-                            return Padding(
-                              padding: EdgeInsets.symmetric(horizontal: 10),
-                              child: YoutubePlayer(
-                                controller: _youtubePlayerController,
-                                showVideoProgressIndicator: true,
-                                progressIndicatorColor: Colors.amber,
-                              ),
-                            );
-                          } else {
-                            return const Text(
-                              'Nenhum trailer disponível.',
-                              textAlign: TextAlign.left,
-                            );
-                          }
-                        } else {
+                          return Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 10),
+                            child: YoutubePlayer(
+                              controller: _youtubePlayerController,
+                              showVideoProgressIndicator: true,
+                              progressIndicatorColor: Colors.amber,
+                            ),
+                          );
+                                                } else {
                           return const Text(
                             'Nenhum vídeo encontrado.',
                             textAlign: TextAlign.left,
@@ -265,9 +258,9 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
                     ),
                   ),
                   // Updates -> Título da seção
-                  Padding(
+                  const Padding(
                     padding: EdgeInsets.only(top: 25, left: 10, right: 10),
-                    child: const Text(
+                    child: Text(
                       "Filmes semelhantes",
                       style: TextStyle(
                         color: Colors.white54,

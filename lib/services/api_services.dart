@@ -83,7 +83,7 @@ class ApiServices {
 
   Future<Result> getPopularMovies() async {
     const endPoint = 'movie/popular';
-    final url = '$baseUrl$endPoint$key$language'; // Add: Definição de idioma
+    const url = '$baseUrl$endPoint$key$language'; // Add: Definição de idioma
 
     final response = await http.get(Uri.parse(url));
     if (response.statusCode == 200) {
