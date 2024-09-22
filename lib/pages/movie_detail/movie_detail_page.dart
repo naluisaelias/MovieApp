@@ -41,17 +41,17 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
         .getMovieVideo(widget.movieId)
         .then((result) => result.results); // Add: Get -> Movie vídeos
     watchProviders = apiServices
-        .getWatchProviders(widget.movieId); // Add: Get ->  Watch Providers
+        .getWatchProviders(widget.movieId); // Add: Get -> Watch Providers
   }
 
-// Add: Dispose -> Para garantir que a memória utilizada pelo player seja liberada
+  // Add: Dispose -> Para garantir que a memória utilizada pelo player seja liberada
   @override
   void dispose() {
     _youtubePlayerController.dispose();
     super.dispose();
   }
 
-// Add: Youtube Initializer
+  // Add: Youtube Initializer
   void initializeYoutubePlayer(String videoId) {
     _youtubePlayerController = YoutubePlayerController(
       initialVideoId: videoId,
@@ -78,16 +78,19 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
                   movie!.genres.map((genre) => genre.name).join(', ');
 
               return Column(
+                crossAxisAlignment:
+                    CrossAxisAlignment.start, // Update -> Alinha à esquerda
                 children: [
                   Stack(
                     children: [
                       Container(
                         height: size.height * 0.4,
                         decoration: BoxDecoration(
-                            image: DecorationImage(
-                                image: NetworkImage(
-                                    "$imageUrl${movie.posterPath}"),
-                                fit: BoxFit.cover)),
+                          image: DecorationImage(
+                            image: NetworkImage("$imageUrl${movie.posterPath}"),
+                            fit: BoxFit.cover,
+                          ),
+                        ),
                         child: SafeArea(
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -99,7 +102,7 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
                                 onPressed: () {
                                   Navigator.pop(context);
                                 },
-                              )
+                              ),
                             ],
                           ),
                         ),
@@ -107,10 +110,11 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
                     ],
                   ),
                   Padding(
-                    padding:
-                        const EdgeInsets.only(top: 25, left: 10, right: 10),
+                    padding: EdgeInsets.only(
+                        top: 25, left: 10, right: 10), // Update -> Padding
                     child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment
+                          .start, // Update -> Alinha à esquerda
                       children: [
                         Text(
                           movie.title,
@@ -128,9 +132,6 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
                                 color: Colors.grey,
                               ),
                             ),
-                            const SizedBox(
-                              width: 30,
-                            ),
                             const SizedBox(width: 30),
                             Text(
                               genresText,
@@ -141,89 +142,142 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
                             ),
                           ],
                         ),
-                        const SizedBox(
-                          height: 30,
-                        ),
+                        const SizedBox(height: 30),
                         Text(
                           movie.overview,
                           maxLines: 6,
                           overflow: TextOverflow.ellipsis,
                           style: const TextStyle(
-                              color: Colors.white, fontSize: 16),
+                            color: Colors.white,
+                            fontSize: 16,
+                          ),
                         ),
                       ],
                     ),
                   ),
-                  const SizedBox(
-                    height: 30,
+                  // Updates -> Título da seção
+                  Padding(
+                    padding: EdgeInsets.only(top: 25, left: 10, right: 10),
+                    child: const Text(
+                      "Disponível em",
+                      style: TextStyle(
+                        color: Colors.white54,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 18,
+                      ),
+                      textAlign: TextAlign.left,
+                    ),
                   ),
-// Adicionando os streamings onde o filme está disponível
-                  FutureBuilder<WatchProviderResult>(
-                    future: watchProviders,
-                    builder: (context, providerSnapshot) {
-                      if (providerSnapshot.connectionState ==
-                          ConnectionState.waiting) {
-                        return const Center(child: CircularProgressIndicator());
-                      } else if (providerSnapshot.hasError) {
-                        return const Text('Erro ao carregar provedores.');
-                      } else if (providerSnapshot.hasData) {
-                        final providers = providerSnapshot.data!.results;
-
-                        final brProviders = providers['BR'] ?? [];
-                        if (brProviders.isEmpty) {
-                          return const Text(
-                              'Não disponível em serviços de streaming no Brasil.');
-                        }
-                        return Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: brProviders.map<Widget>((provider) {
-                            return Text('Provedor: ${provider.providerName}');
-                          }).toList(),
-                        );
-                      }
-                      return const Text('Nenhum provedor encontrado.');
-                    },
-                  ),
-
-                  // Adicionando o vídeo do filme
-                  FutureBuilder<List<MovieVideo>>(
-                    future: movieVideos,
-                    builder: (context, videoSnapshot) {
-                      if (videoSnapshot.connectionState ==
-                          ConnectionState.waiting) {
-                        return const Center(child: CircularProgressIndicator());
-                      } else if (videoSnapshot.hasError) {
-                        return const Text('Erro ao carregar vídeos.');
-                      } else if (videoSnapshot.hasData) {
-                        final videos = videoSnapshot.data!;
-                        final trailer = videos.firstWhere(
-                          (video) =>
-                              video.type == 'Trailer' &&
-                              video.site == 'YouTube',
-                          orElse: () => null as MovieVideo,
-                        );
-
-                        if (trailer != null) {
-                          initializeYoutubePlayer(
-                              trailer.key); 
-
-                          return Padding(
-                            padding:
-                                const EdgeInsets.symmetric(horizontal: 16.0),
-                            child: YoutubePlayer(
-                              controller: _youtubePlayerController,
-                              showVideoProgressIndicator: true,
-                              progressIndicatorColor: Colors.amber,
-                            ),
+                  Padding(
+                    padding: EdgeInsets.only(top: 10, left: 10, right: 10),
+                    child: FutureBuilder<WatchProviderResult>(
+                      future: watchProviders,
+                      builder: (context, providerSnapshot) {
+                        if (providerSnapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          return const Center(
+                              child: CircularProgressIndicator());
+                        } else if (providerSnapshot.hasError) {
+                          return const Text('Erro ao carregar provedores.');
+                        } else if (providerSnapshot.hasData) {
+                          final providers = providerSnapshot.data!.results;
+                          final brProviders = providers['BR'] ?? [];
+                          if (brProviders.isEmpty) {
+                            return const Text(
+                              'Não disponível em serviços de streaming no Brasil.',
+                              textAlign: TextAlign.left,
+                            );
+                          }
+                          return Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: brProviders.map<Widget>((provider) {
+                              return Text(
+                                'Provedor: ${provider.providerName}',
+                                textAlign: TextAlign.left,
+                              );
+                            }).toList(),
                           );
-                        } else {
-                          return const Text('Nenhum trailer disponível.');
                         }
-                      } else {
-                        return const Text('Nenhum vídeo encontrado.');
-                      }
-                    },
+                        return const Text(
+                          'Nenhum provedor encontrado.',
+                          textAlign: TextAlign.left,
+                        );
+                      },
+                    ),
                   ),
+                  // Updates -> Título da seção
+                  Padding(
+                    padding: EdgeInsets.only(top: 25, left: 10, right: 10),
+                    child: const Text(
+                      "Assista ao Trailer",
+                      style: TextStyle(
+                        color: Colors.white54,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 18,
+                      ),
+                      textAlign: TextAlign.left,
+                    ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(top: 10, left: 10, right: 10),
+                    child: FutureBuilder<List<MovieVideo>>(
+                      future: movieVideos,
+                      builder: (context, videoSnapshot) {
+                        if (videoSnapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          return const Center(
+                              child: CircularProgressIndicator());
+                        } else if (videoSnapshot.hasError) {
+                          return const Text('Erro ao carregar vídeos.');
+                        } else if (videoSnapshot.hasData) {
+                          final videos = videoSnapshot.data!;
+                          final trailer = videos.firstWhere(
+                            (video) =>
+                                video.type == 'Trailer' &&
+                                video.site == 'YouTube',
+                            orElse: () => null as MovieVideo,
+                          );
+
+                          if (trailer != null) {
+                            initializeYoutubePlayer(trailer.key);
+
+                            return Padding(
+                              padding: EdgeInsets.symmetric(horizontal: 10),
+                              child: YoutubePlayer(
+                                controller: _youtubePlayerController,
+                                showVideoProgressIndicator: true,
+                                progressIndicatorColor: Colors.amber,
+                              ),
+                            );
+                          } else {
+                            return const Text(
+                              'Nenhum trailer disponível.',
+                              textAlign: TextAlign.left,
+                            );
+                          }
+                        } else {
+                          return const Text(
+                            'Nenhum vídeo encontrado.',
+                            textAlign: TextAlign.left,
+                          );
+                        }
+                      },
+                    ),
+                  ),
+                  // Updates -> Título da seção
+                  Padding(
+                    padding: EdgeInsets.only(top: 25, left: 10, right: 10),
+                    child: const Text(
+                      "Filmes semelhantes",
+                      style: TextStyle(
+                        color: Colors.white54,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 18,
+                      ),
+                      textAlign: TextAlign.left,
+                    ),
+                  ),
+                  const SizedBox(height: 20),
                   FutureBuilder(
                     future: movieRecommendationModel,
                     builder: (context, snapshot) {
@@ -235,21 +289,13 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
                             : Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  const Text(
-                                    "More like this",
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                  const SizedBox(height: 20),
                                   GridView.builder(
                                     physics:
                                         const NeverScrollableScrollPhysics(),
                                     shrinkWrap: true,
                                     padding: EdgeInsets.zero,
                                     scrollDirection: Axis.vertical,
-                                    itemCount: movie.movies.take(3).length, // Update: Limitação para o número de filmes recomendados
+                                    itemCount: movie.movies.take(3).length,
                                     gridDelegate:
                                         const SliverGridDelegateWithFixedCrossAxisCount(
                                       crossAxisCount: 3,
@@ -279,7 +325,7 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
                                 ],
                               );
                       }
-                      return const Text("Something Went wrong");
+                      return const Text("Something went wrong");
                     },
                   ),
                 ],
