@@ -19,3 +19,11 @@ Este projeto foi desenvolvido como parte do **Checkpoint 04** da disciplina **'D
 * **The Movie Database (TMDb) API:** TMDb é uma API que fornece informações detalhadas sobre filmes, séries de TV e atores. Os desenvolvedores podem usar essa API para obter dados como sinopses, classificações, imagens e trailers para enriquecer seus aplicativos.
 * **Cached Network Image:** Cached Network Image é um pacote Flutter que permite carregar e exibir imagens da internet com suporte ao cache. Ele ajuda a melhorar o desempenho do aplicativo, reduzindo o tempo de carregamento e o consumo de dados ao reutilizar imagens já carregadas.
 * **YouTube Player (opcional para reprodução de vídeos):** YouTube Player é um pacote Flutter que permite a incorporação e reprodução de vídeos do YouTube diretamente no aplicativo. Ele suporta opções como personalização do player, controle de reprodução e exibição em tela cheia.
+
+## 👨🏻‍🏫 Orientações do Checkpoint
+
+Implementar novas funcionalidades seguindo os requisitos.
+
+### 📝 Requisitos
+* **Funcionalidade de Detalhes do Filme:** Ao clicar em qualquer filme listado no aplicativo, o usuário deverá ser redirecionado para uma nova tela de detalhes. Nesta tela, devem ser exibidas informações completas do filme, como título, sinopse, ano de lançamento e avaliação. Para isso, utilize no mínimo um endpoint da API de filmes.
+* **Funcionalidades Extras:** Além da funcionalidade de detalhes do filme, implemente mais duas funcionalidades de sua escolha, desde que utilizem ao menos dois endpoints adicionais da API de filmes. A escolha das funcionalidades fica a seu critério, mas elas devem trazer valor ao usuário e estar relacionadas ao contexto do aplicativo de filmes.
